@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MongoDB extends MongoRepository<Weather, Long> {
+public interface WeatherRepository extends MongoRepository<Weather, Long> {
 
     @Query("")
     Weather findWeatherByCity(String city, String date);

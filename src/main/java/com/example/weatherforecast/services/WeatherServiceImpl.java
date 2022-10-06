@@ -1,5 +1,6 @@
 package com.example.weatherforecast.services;
 
+import com.example.weatherforecast.controller.WeatherController;
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.dto.WeatherJsonModel;
@@ -19,30 +20,30 @@ import java.util.Set;
 @Service
 public class WeatherServiceImpl implements WeatherService {
 
-    @Value("${rest.baseurl}")
-    private String host;
+    private final WeatherController weatherController;
 
-    private RestTemplate restTemplate;
     private final int TIME_START_INDEX_IN_DATE_STRING = 10;
     private final int DATE_END_INDEX_IN_DATE_STRING = 9;
     private final String MORNING = "09:00";
     private final String MIDDAY = "14:00";
     private final String EVENING = "20:00";
 
+    public WeatherServiceImpl(WeatherController weatherController) {
+        this.weatherController = weatherController;
+    }
+
     @Override
     public WeatherJsonModel findWeatherByLatitudeAndLongitude(City city) throws JsonProcessingException {
-        return restTemplate.getForObject (
-                        urlBuilder(city), WeatherJsonModel.class);
+        return weatherController.findWeatherByLatitudeAndLongitude(city);
     }
 
     @Override
     public List<Weather> trimJSONto3ValuesDaily(@NotNull WeatherJsonModel weatherJsonModel) {
-
         List<Weather> weatherList = new ArrayList<>();
         Double latitude = weatherJsonModel.getLatitude();
         Double longitude = weatherJsonModel.getLongitude();
 
-        for (int i = 0; i < weatherJsonModel.getHourly().getTime().size(); i++) {
+        for (int i = 0; i < weatherJsonModel.getHourly().getTime().size()-1; i++) {
 
             String time = weatherJsonModel.getHourly()
                     .getTime().get(i)
@@ -75,11 +76,5 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
 
-    private String urlBuilder(City city) {
-        return host +
-                "latitude=" +
-                city.getLatitude() + "&longitude" +
-                city.getLongitude() +
-                "&hourly=temperature_2m,rain";
-    }
+
 }
