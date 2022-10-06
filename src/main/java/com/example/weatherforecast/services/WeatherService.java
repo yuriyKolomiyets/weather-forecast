@@ -11,5 +11,6 @@ import java.util.List;
 public interface WeatherService {
     WeatherJsonModel findWeatherByLatitudeAndLongitude (City city) throws JsonProcessingException;
     List<Weather>trimJSONto3ValuesDaily(WeatherJsonModel weatherJsonModel);
+    List<Weather>getWeather(Double latitude, Double longitude) throws JsonProcessingException;
 }
 

@@ -2,18 +2,18 @@ package com.example.weatherforecast.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Hourly {
-    private ArrayList<String> time;
+    private List<String> time;
     @JsonProperty("temperature_2m")
-    private ArrayList<Double> temperature2m;
-    private ArrayList<Double> rain;
+    private List<Double> temperature2m;
+    private List<Double> rain;
 }
