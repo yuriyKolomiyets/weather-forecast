@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Configuration
-@EnableMongoRepositories(basePackages = "com.example.weatherforecastrepositories")
+@EnableMongoRepositories(basePackages = "com.example.weatherforecast.repositories")
 public class MongoConfig extends AbstractMongoClientConfiguration {
     @Override
     protected String getDatabaseName() {
@@ -31,6 +31,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public Collection getMappingBasePackages() {
-        return Collections.singleton("com.example.weatherforecastrepositorie");
+        return Collections.singleton("com.example.weatherforecast.repositories");
     }
 }
