@@ -2,16 +2,12 @@ package com.example.weatherforecast.weatherApiIntegration;
 
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.dto.WeatherJsonModel;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.weatherforecast.integration.WeatherApiIntegration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +18,7 @@ class WeatherApiIntegrationTest {
     City city;
     private final Double LATITUDE=50.4422;
     private final Double LONGITUDE=30.5367;
+    private final String HOST = "https://api.open-meteo.com/v1/forecast?";
 
     @BeforeEach
     void setUp() {
@@ -30,8 +27,8 @@ class WeatherApiIntegrationTest {
     }
 
     @Test
-    void findWeatherByLatitudeAndLongitude() throws JsonProcessingException {
-        WeatherJsonModel weatherJsonModel = weatherApiIntegration.findWeatherByLatitudeAndLongitude(city);
+    void findWeatherByLatitudeAndLongitude()  {
+      WeatherJsonModel weatherJsonModel = weatherApiIntegration.findWeatherByLatitudeAndLongitude(city);
         assertNotNull(weatherJsonModel);
         assertEquals(168,weatherJsonModel.getHourly().getTime().size());
         assertEquals(168,weatherJsonModel.getHourly().getRain().size());

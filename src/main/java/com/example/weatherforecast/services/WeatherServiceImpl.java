@@ -1,20 +1,27 @@
 package com.example.weatherforecast.services;
 
-import com.example.weatherforecast.weatherApiIntegration.WeatherApiIntegration;
+import com.example.weatherforecast.integration.WeatherApiIntegration;
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.dto.WeatherJsonModel;
+import com.example.weatherforecast.repositories.WeatherRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class WeatherServiceImpl implements WeatherService {
 
     private final WeatherApiIntegration weatherApiIntegration;
+    private final WeatherRepository weatherRepository;
 
     private final int TIME_START_INDEX_IN_DATE_STRING = 11;
     private final int DATE_END_INDEX_IN_DATE_STRING = 10;
@@ -22,12 +29,8 @@ public class WeatherServiceImpl implements WeatherService {
     private final String MIDDAY = "14:00";
     private final String EVENING = "20:00";
 
-    public WeatherServiceImpl(WeatherApiIntegration weatherApiIntegration) {
-        this.weatherApiIntegration = weatherApiIntegration;
-    }
-
     @Override
-    public WeatherJsonModel findWeatherByLatitudeAndLongitude(City city) throws JsonProcessingException {
+    public WeatherJsonModel findWeatherByLatitudeAndLongitude(City city) {
         return weatherApiIntegration.findWeatherByLatitudeAndLongitude(city);
     }
 
@@ -74,6 +77,11 @@ public class WeatherServiceImpl implements WeatherService {
         WeatherJsonModel weatherJSONModel =
                 weatherApiIntegration.findWeatherByLatitudeAndLongitude(new City(latitude, longitude));
         return trimJSONto3ValuesDaily(weatherJSONModel);
+    }
+
+    @Override
+    public List<Weather> saveWeatherList(List<Weather> weatherList) {
+        return weatherRepository.insert(weatherList);
     }
 
 

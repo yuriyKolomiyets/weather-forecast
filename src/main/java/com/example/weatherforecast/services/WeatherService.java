@@ -12,5 +12,6 @@ public interface WeatherService {
     WeatherJsonModel findWeatherByLatitudeAndLongitude (City city) throws JsonProcessingException;
     List<Weather>trimJSONto3ValuesDaily(WeatherJsonModel weatherJsonModel);
     List<Weather>getWeather(Double latitude, Double longitude) throws JsonProcessingException;
+    List<Weather>saveWeatherList(List<Weather> weatherList);
 }
 
