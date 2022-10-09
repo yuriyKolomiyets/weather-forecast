@@ -13,8 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +30,6 @@ public class WeatherServiceImpl implements WeatherService {
     private final String MORNING = "09:00";
     private final String MIDDAY = "14:00";
     private final String EVENING = "20:00";
-
-    @Override
-    public WeatherJsonModel findWeatherByLatitudeAndLongitude(City city) {
-        return weatherApiIntegration.findWeatherByLatitudeAndLongitude(city);
-    }
 
     @Override
     public List<Weather> trimJSONto3ValuesDaily(@NotNull WeatherJsonModel weatherJsonModel) {
@@ -73,15 +70,41 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public List<Weather> getWeather(Double latitude, Double longitude) throws JsonProcessingException {
+    public List<Weather> getWeatherFromApi(Double latitude, Double longitude) throws JsonProcessingException {
         WeatherJsonModel weatherJSONModel =
                 weatherApiIntegration.findWeatherByLatitudeAndLongitude(new City(latitude, longitude));
         return trimJSONto3ValuesDaily(weatherJSONModel);
     }
 
     @Override
-    public List<Weather> saveWeatherList(List<Weather> weatherList) {
-        return weatherRepository.insert(weatherList);
+    public List<Weather> saveWeatherListToDB(List<Weather> weatherList) {
+        return weatherRepository.saveAll(weatherList);
+
+    }
+
+    @Override
+    public List<Weather> getWeatherListFromDB(City city) {
+        return weatherRepository.findBy(city); // if null?
+    }
+
+    @Override
+    public List<Weather> getWeatherToController(City city) throws JsonProcessingException {
+        List<Weather> weatherList;
+        LocalDate dateObj = LocalDate.now();
+
+        if (getWeatherListFromDB(city) != null) {
+            List<Weather> weatherListFromDB = getWeatherListFromDB(city);
+
+            if (!Objects.equals(weatherListFromDB.get(0).getDate(), dateObj)) {
+                weatherList = getWeatherListFromDB(city);
+                return weatherList;
+            }
+        }
+
+        List<Weather> weatherFromApi = getWeatherFromApi(city.getLatitude(), city.getLongitude());
+        saveWeatherListToDB(weatherFromApi);
+
+        return weatherFromApi;
     }
 
 
