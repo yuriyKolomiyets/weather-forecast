@@ -91,20 +91,42 @@ public class WeatherServiceImpl implements WeatherService {
     public List<Weather> getWeatherToController(City city) throws JsonProcessingException {
 
         List<Weather> weatherList = new ArrayList<>();
-        LocalDate dateToday = LocalDate.now();
+
+        String dateToday = String.valueOf(LocalDate.now());
+        int dateValue = Integer.parseInt(dateToday.substring(8,10));
+
+        String datePlus1 = dateToday.substring(0,8) + (dateValue + 1);
+        String datePlus2 = dateToday.substring(0,8) + (dateValue + 2);
+        String datePlus3 = dateToday.substring(0,8) + (dateValue + 3);
+        String datePlus4 = dateToday.substring(0,8) + (dateValue + 4);
+        String datePlus5 = dateToday.substring(0,8) + (dateValue + 5);
+        String datePlus6 = dateToday.substring(0,8) + (dateValue + 6);
+
         boolean weatherFound = false;
-        int countDays = 0;
 
         if (getWeatherListFromDB(city) != null) {
+
             List<Weather> weatherListFromDB = getWeatherListFromDB(city);
 
             for (int i = 0; i < weatherListFromDB.size(); i++) {
 
-                if ((countDays < 20 & weatherFound) ||
-                        String.valueOf(dateToday).equals(weatherListFromDB.get(i).getDate())) {
+                String dateFromDb = weatherListFromDB.get(i).getDate();
+
+
+                if (!weatherFound ||
+                        dateToday.equals(dateFromDb)) {
                     weatherFound = true;
+
+                }
+
+                if (weatherFound & (dateFromDb.equals(dateToday) || dateFromDb.equals(datePlus1)
+                        || dateFromDb.equals(datePlus2) || dateFromDb.equals(datePlus3)
+                        || dateFromDb.equals(datePlus4) || dateFromDb.equals(datePlus5)
+                        || dateFromDb.equals(datePlus6))){
+
+                    //need to check if already in array
+
                     weatherList.add(weatherListFromDB.get(i));
-                    countDays++;
                 }
             }
 
