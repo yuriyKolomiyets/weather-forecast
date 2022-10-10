@@ -106,38 +106,40 @@ public class WeatherServiceImpl implements WeatherService {
 
         List<String> dataListNeedToReturn = dateListToReturn();
 
-        if (getWeatherListFromDB(city) != null) {
+        List<Weather> weatherListFromDB = getWeatherListFromDB(city);
 
-            List<Weather> weatherListFromDB = getWeatherListFromDB(city);
+        for (Weather weather : weatherListFromDB) {
 
-            for (Weather weather : weatherListFromDB) {
+            String dateFromDb = weather.getDate();
+            String timeFromDb = weather.getTime();
 
-                String dateFromDb = weather.getDate();
-                String timeFromDb = weather.getTime();
-
-                if (!weatherFound ||
-                        dateToday.equals(dateFromDb)) {
-                    weatherFound = true;
-                }
-
-                if (dataListNeedToReturn.contains(dateFromDb)
-                        & weatherList.stream().noneMatch(w -> w.getDate().equals(dateFromDb)
-                        & w.getTime().equals(timeFromDb))) {
-
-                    weatherList.add(weather);
-
-                }
+            if (!weatherFound ||
+                    dateToday.equals(dateFromDb)) {
+                weatherFound = true;
             }
 
-            System.out.println("return from db");
+            if (dataListNeedToReturn.contains(dateFromDb)
+                    & weatherList.stream().noneMatch(w -> w.getDate().equals(dateFromDb)
+                    & w.getTime().equals(timeFromDb))) {
 
-            return weatherList;
+                weatherList.add(weather);
+
+            }
         }
 
-        List<Weather> weatherFromApi = getWeatherFromApi(city.getLatitude(), city.getLongitude());
-        saveWeatherListToDB(weatherFromApi);
-        System.out.println("return from api");
-        return weatherFromApi;
+        if (weatherList.size() == 21) {
+            System.out.println("return from db");
+            return weatherList;
+
+        } else {
+            List<Weather> weatherFromApi = getWeatherFromApi(city.getLatitude(), city.getLongitude());
+
+            saveWeatherListToDB(weatherFromApi);
+
+            System.out.println("return from api");
+
+            return weatherFromApi;
+        }
     }
 
     private List<String> dateListToReturn() {
