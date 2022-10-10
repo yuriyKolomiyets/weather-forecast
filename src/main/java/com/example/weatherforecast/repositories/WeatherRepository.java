@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface WeatherRepository extends MongoRepository<Weather, Long> {
 
-    @Query("mongo query")
-    public List<Weather> findBy(City city);
+    public List<Weather> findByCity(City city);
 
 }

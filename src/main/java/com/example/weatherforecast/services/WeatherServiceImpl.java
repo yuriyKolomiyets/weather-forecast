@@ -95,7 +95,7 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public List<Weather> getWeatherListFromDB(City city) {
-        return weatherRepository.findBy(city); // if null?
+        return weatherRepository.findByCity(city);
     }
 
     @Override
