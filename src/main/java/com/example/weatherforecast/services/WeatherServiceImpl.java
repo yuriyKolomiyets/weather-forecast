@@ -89,21 +89,33 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public List<Weather> getWeatherToController(City city) throws JsonProcessingException {
-        List<Weather> weatherList;
-        LocalDate dateObj = LocalDate.now();
+
+        List<Weather> weatherList = new ArrayList<>();
+        LocalDate dateToday = LocalDate.now();
+        boolean weatherFound = false;
+        int countDays = 0;
 
         if (getWeatherListFromDB(city) != null) {
             List<Weather> weatherListFromDB = getWeatherListFromDB(city);
 
-            if (!Objects.equals(weatherListFromDB.get(0).getDate(), dateObj)) {
-                weatherList = getWeatherListFromDB(city);
-                return weatherList;
+            for (int i = 0; i < weatherListFromDB.size(); i++) {
+
+                if ((countDays < 20 & weatherFound) ||
+                        String.valueOf(dateToday).equals(weatherListFromDB.get(i).getDate())) {
+                    weatherFound = true;
+                    weatherList.add(weatherListFromDB.get(i));
+                    countDays++;
+                }
             }
+
+            System.out.println("return from db");
+
+            return weatherList;
         }
 
         List<Weather> weatherFromApi = getWeatherFromApi(city.getLatitude(), city.getLongitude());
         saveWeatherListToDB(weatherFromApi);
-
+        System.out.println("return from api");
         return weatherFromApi;
     }
 
