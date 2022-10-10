@@ -32,15 +32,14 @@ public class WeatherServiceImpl implements WeatherService {
     private final String MIDDAY = "14:00";
     private final String EVENING = "20:00";
 
-    String dateToday = String.valueOf(LocalDate.now());
-
-    int dateValue = Integer.parseInt(dateToday.substring(8, 10));
-    String datePlus1 = dateToday.substring(0, 8) + (dateValue + 1);
-    String datePlus2 = dateToday.substring(0, 8) + (dateValue + 2);
-    String datePlus3 = dateToday.substring(0, 8) + (dateValue + 3);
-    String datePlus4 = dateToday.substring(0, 8) + (dateValue + 4);
-    String datePlus5 = dateToday.substring(0, 8) + (dateValue + 5);
-    String datePlus6 = dateToday.substring(0, 8) + (dateValue + 6);
+    private String dateToday = String.valueOf(LocalDate.now());
+    private int dateValue = Integer.parseInt(dateToday.substring(8, 10));
+    private String datePlus1 = dateToday.substring(0, 8) + (dateValue + 1);
+    private String datePlus2 = dateToday.substring(0, 8) + (dateValue + 2);
+    private String datePlus3 = dateToday.substring(0, 8) + (dateValue + 3);
+    private String datePlus4 = dateToday.substring(0, 8) + (dateValue + 4);
+    private String datePlus5 = dateToday.substring(0, 8) + (dateValue + 5);
+    private String datePlus6 = dateToday.substring(0, 8) + (dateValue + 6);
 
 
     @Override
@@ -105,14 +104,7 @@ public class WeatherServiceImpl implements WeatherService {
         List<Weather> weatherList = new ArrayList<>();
         boolean weatherFound = false;
 
-        List<String> dataListNeedToReturn = new ArrayList<>();
-        dataListNeedToReturn.add(dateToday);
-        dataListNeedToReturn.add(datePlus1);
-        dataListNeedToReturn.add(datePlus2);
-        dataListNeedToReturn.add(datePlus3);
-        dataListNeedToReturn.add(datePlus4);
-        dataListNeedToReturn.add(datePlus5);
-        dataListNeedToReturn.add(datePlus6);
+        List<String> dataListNeedToReturn = dateListToReturn();
 
         if (getWeatherListFromDB(city) != null) {
 
@@ -130,8 +122,7 @@ public class WeatherServiceImpl implements WeatherService {
 
                 if (dataListNeedToReturn.contains(dateFromDb)
                         & weatherList.stream().noneMatch(w -> w.getDate().equals(dateFromDb)
-                        & w.getTime().equals(timeFromDb)))
-                {
+                        & w.getTime().equals(timeFromDb))) {
 
                     weatherList.add(weather);
 
@@ -149,5 +140,19 @@ public class WeatherServiceImpl implements WeatherService {
         return weatherFromApi;
     }
 
+    private List<String> dateListToReturn() {
+
+        List<java.lang.String> dataListNeedToReturn = new ArrayList<>();
+
+        dataListNeedToReturn.add(dateToday);
+        dataListNeedToReturn.add(datePlus1);
+        dataListNeedToReturn.add(datePlus2);
+        dataListNeedToReturn.add(datePlus3);
+        dataListNeedToReturn.add(datePlus4);
+        dataListNeedToReturn.add(datePlus5);
+        dataListNeedToReturn.add(datePlus6);
+
+        return dataListNeedToReturn;
+    }
 
 }
