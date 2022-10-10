@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,17 @@ public class WeatherServiceImpl implements WeatherService {
     private final String MORNING = "09:00";
     private final String MIDDAY = "14:00";
     private final String EVENING = "20:00";
+
+    String dateToday = String.valueOf(LocalDate.now());
+
+    int dateValue = Integer.parseInt(dateToday.substring(8, 10));
+    String datePlus1 = dateToday.substring(0, 8) + (dateValue + 1);
+    String datePlus2 = dateToday.substring(0, 8) + (dateValue + 2);
+    String datePlus3 = dateToday.substring(0, 8) + (dateValue + 3);
+    String datePlus4 = dateToday.substring(0, 8) + (dateValue + 4);
+    String datePlus5 = dateToday.substring(0, 8) + (dateValue + 5);
+    String datePlus6 = dateToday.substring(0, 8) + (dateValue + 6);
+
 
     @Override
     public List<Weather> trimJSONto3ValuesDaily(@NotNull WeatherJsonModel weatherJsonModel) {
@@ -91,42 +103,38 @@ public class WeatherServiceImpl implements WeatherService {
     public List<Weather> getWeatherToController(City city) throws JsonProcessingException {
 
         List<Weather> weatherList = new ArrayList<>();
-
-        String dateToday = String.valueOf(LocalDate.now());
-        int dateValue = Integer.parseInt(dateToday.substring(8,10));
-
-        String datePlus1 = dateToday.substring(0,8) + (dateValue + 1);
-        String datePlus2 = dateToday.substring(0,8) + (dateValue + 2);
-        String datePlus3 = dateToday.substring(0,8) + (dateValue + 3);
-        String datePlus4 = dateToday.substring(0,8) + (dateValue + 4);
-        String datePlus5 = dateToday.substring(0,8) + (dateValue + 5);
-        String datePlus6 = dateToday.substring(0,8) + (dateValue + 6);
-
         boolean weatherFound = false;
+
+        List<String> dataListNeedToReturn = new ArrayList<>();
+        dataListNeedToReturn.add(dateToday);
+        dataListNeedToReturn.add(datePlus1);
+        dataListNeedToReturn.add(datePlus2);
+        dataListNeedToReturn.add(datePlus3);
+        dataListNeedToReturn.add(datePlus4);
+        dataListNeedToReturn.add(datePlus5);
+        dataListNeedToReturn.add(datePlus6);
 
         if (getWeatherListFromDB(city) != null) {
 
             List<Weather> weatherListFromDB = getWeatherListFromDB(city);
 
-            for (int i = 0; i < weatherListFromDB.size(); i++) {
+            for (Weather weather : weatherListFromDB) {
 
-                String dateFromDb = weatherListFromDB.get(i).getDate();
-
+                String dateFromDb = weather.getDate();
+                String timeFromDb = weather.getTime();
 
                 if (!weatherFound ||
                         dateToday.equals(dateFromDb)) {
                     weatherFound = true;
-
                 }
 
-                if (weatherFound & (dateFromDb.equals(dateToday) || dateFromDb.equals(datePlus1)
-                        || dateFromDb.equals(datePlus2) || dateFromDb.equals(datePlus3)
-                        || dateFromDb.equals(datePlus4) || dateFromDb.equals(datePlus5)
-                        || dateFromDb.equals(datePlus6))){
+                if (dataListNeedToReturn.contains(dateFromDb)
+                        & weatherList.stream().noneMatch(w -> w.getDate().equals(dateFromDb)
+                        & w.getTime().equals(timeFromDb)))
+                {
 
-                    //need to check if already in array
+                    weatherList.add(weather);
 
-                    weatherList.add(weatherListFromDB.get(i));
                 }
             }
 
