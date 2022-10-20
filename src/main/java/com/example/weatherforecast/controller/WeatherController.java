@@ -27,13 +27,11 @@ public class WeatherController {
         return weatherService.getWeatherToController(new City(latitude,longitude));
     }
 
-    @RequestMapping(value = "/api/latitude/{latitude}/longitude/{longitude}", method = GET)
-    public List <Weather> sendWeatherWithRabbit(@PathVariable Double latitude, @PathVariable Double longitude)
+    @RequestMapping(value = "/api-rabbit/latitude/{latitude}/longitude/{longitude}", method = GET)
+    public void sendWeatherWithRabbit(@PathVariable Double latitude, @PathVariable Double longitude)
             throws JsonProcessingException {
         List<Weather> weather = weatherService.getWeatherToController(new City(latitude, longitude));
         weather.forEach(rabbitMqSender::send);
-
-        return weather;
     }
 
 
