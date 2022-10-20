@@ -5,7 +5,9 @@ import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.services.WeatherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import com.example.weatherforecast.services.RabbitMQSender;
 
 import java.util.List;
 
@@ -16,12 +18,25 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class WeatherController {
 
     private final WeatherService weatherService;
+    private final RabbitMQSender rabbitMqSender;
 
     @RequestMapping(value = "/api/latitude/{latitude}/longitude/{longitude}", method = GET)
-    public List <Weather> getWeather(@PathVariable Double latitude, @PathVariable Double longitude )
+    public List <Weather> sendWeather(@PathVariable Double latitude, @PathVariable Double longitude)
             throws JsonProcessingException {
+        System.out.println("request cathched");
         return weatherService.getWeatherToController(new City(latitude,longitude));
     }
+
+    @RequestMapping(value = "/api/latitude/{latitude}/longitude/{longitude}", method = GET)
+    public List <Weather> sendWeatherWithRabbit(@PathVariable Double latitude, @PathVariable Double longitude)
+            throws JsonProcessingException {
+        List<Weather> weather = weatherService.getWeatherToController(new City(latitude, longitude));
+        weather.forEach(rabbitMqSender::send);
+
+        return weather;
+    }
+
+
 
 
 }
