@@ -15,6 +15,6 @@ public interface WeatherService {
     List<Weather> getWeatherListFromDB(City city);
     List<Weather> getWeatherDataForTheRequestCity(City city) throws JsonProcessingException;
     void listenWeatherRequest(WeatherRequest weatherRequest) throws JsonProcessingException;
-    void sendWeatherResponse(Weather weather);
+    void sendWeatherResponse(List<Weather> weathers);
 }
 

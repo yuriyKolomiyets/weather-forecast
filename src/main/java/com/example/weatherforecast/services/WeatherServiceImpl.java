@@ -150,23 +150,20 @@ public class WeatherServiceImpl implements WeatherService {
 
         log.info("Got request for weather {}", weatherRequest);
 
-        System.out.println("Got request for weather {}" + weatherRequest.toString());
-
         List<Weather> weathers = getWeatherDataForTheRequestCity(
                 new City(weatherRequest.getLatitude(), weatherRequest.getLongitude())
         );
 
-        weathers.forEach(this::sendWeatherResponse);
+        sendWeatherResponse(weathers);
+
     }
 
     @Override
-    public void sendWeatherResponse(Weather weather) {
+    public void sendWeatherResponse(List<Weather> weathers) {
 
-        weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weather).build());
+        weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weathers).build());
 
-        log.info("Message {} published", weather);
-
-        System.out.println("Message {} published" + weather.toString());
+        log.info("Message {} published", weathers);
 
     }
 
