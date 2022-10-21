@@ -5,6 +5,7 @@ import com.example.weatherforecast.integration.WeatherApiIntegration;
 import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.dto.Hourly;
 import com.example.weatherforecast.dto.WeatherJsonModel;
+import com.example.weatherforecast.messaging.WeatherChannels;
 import com.example.weatherforecast.repositories.WeatherRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,8 @@ class WeatherServiceImplTest {
     private WeatherRepository weatherRepository;
     @Mock
     private WeatherApiIntegration weatherApiIntegration;
+    @Mock
+    private WeatherChannels weatherChannels;
 
     private WeatherJsonModel returnWeatherJsonModel;
 
@@ -58,7 +61,7 @@ class WeatherServiceImplTest {
 
     @Test
     void trimJSONto3ValuesDaily() {
-        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository);
+        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository, weatherChannels);
         List<Weather> weatherList = weatherService.trimJSONto3ValuesDaily(returnWeatherJsonModel);
         assertNotNull(weatherList);
         assertEquals(3, weatherList.size());
@@ -68,7 +71,7 @@ class WeatherServiceImplTest {
 
     @Test
     void saveWeatherList(){
-        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository);
+        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository, weatherChannels);
         List<Weather> weatherList = weatherService.trimJSONto3ValuesDaily(returnWeatherJsonModel);
         List<Weather> weatherList1 = weatherService.saveWeatherListToDB(weatherList);
         assertNotNull(weatherList1);

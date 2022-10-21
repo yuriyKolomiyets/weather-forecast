@@ -13,5 +13,6 @@ public interface WeatherService {
     List<Weather> saveWeatherListToDB(List<Weather> weatherList);
     List<Weather> getWeatherListFromDB(City city);
     List<Weather> getWeatherToController(City city) throws JsonProcessingException;
+    void sendWeatherResponse(WeatherJsonModel weatherJsonModel);
 }
 
