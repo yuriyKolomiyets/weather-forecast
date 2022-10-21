@@ -1,9 +1,7 @@
-package com.example.weatherforecast.controller;
+package com.example.weatherforecast.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class WeatherApiIntegrationTest {
 
