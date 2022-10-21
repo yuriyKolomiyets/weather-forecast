@@ -1,4 +1,4 @@
-package com.example.weatherforecast.controller;
+package com.example.weatherforecast.controllers;
 
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
@@ -20,7 +20,7 @@ public class WeatherController {
     @RequestMapping(value = "/api/latitude/{latitude}/longitude/{longitude}", method = GET)
     public List <Weather> getWeather(@PathVariable Double latitude, @PathVariable Double longitude )
             throws JsonProcessingException {
-        return weatherService.getWeatherToController(new City(latitude,longitude));
+        return weatherService.getWeatherDataForTheRequestCity(new City(latitude,longitude));
     }
 
 

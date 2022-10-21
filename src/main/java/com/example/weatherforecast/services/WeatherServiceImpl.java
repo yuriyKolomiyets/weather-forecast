@@ -1,30 +1,32 @@
 package com.example.weatherforecast.services;
 
+import com.example.weatherforecast.dto.WeatherRequest;
 import com.example.weatherforecast.integration.WeatherApiIntegration;
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.dto.WeatherJsonModel;
+import com.example.weatherforecast.integration.WeatherChannels;
 import com.example.weatherforecast.repositories.WeatherRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WeatherServiceImpl implements WeatherService {
 
     private final WeatherApiIntegration weatherApiIntegration;
     private final WeatherRepository weatherRepository;
+    private final WeatherChannels weatherChannels;
 
     private final int TIME_START_INDEX_IN_DATE_STRING = 11;
     private final int DATE_END_INDEX_IN_DATE_STRING = 10;
@@ -99,7 +101,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public List<Weather> getWeatherToController(City city) throws JsonProcessingException {
+    public List<Weather> getWeatherDataForTheRequestCity(City city) throws JsonProcessingException {
 
         List<Weather> weatherList = new ArrayList<>();
         boolean weatherFound = false;
@@ -140,6 +142,28 @@ public class WeatherServiceImpl implements WeatherService {
 
             return weatherFromApi;
         }
+    }
+
+    @Override
+    @StreamListener(WeatherChannels.WEATHER_REQUEST_INPUT_CHANNEL)
+    public void listenWeatherRequest(WeatherRequest weatherRequest) throws JsonProcessingException {
+
+        log.info("Got request for weather {}", weatherRequest);
+
+        List<Weather> weathers = getWeatherDataForTheRequestCity(
+                new City(weatherRequest.getLatitude(), weatherRequest.getLongitude())
+        );
+
+        weathers.forEach(this::sendWeatherResponse);
+    }
+
+    @Override
+    public void sendWeatherResponse(Weather weather) {
+
+        weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weather).build());
+
+        log.info("Message {} published", weather);
+
     }
 
     private List<String> dateListToReturn() {
