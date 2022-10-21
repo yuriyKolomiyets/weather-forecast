@@ -150,6 +150,8 @@ public class WeatherServiceImpl implements WeatherService {
 
         log.info("Got request for weather {}", weatherRequest);
 
+        System.out.println("Got request for weather {}" + weatherRequest.toString());
+
         List<Weather> weathers = getWeatherDataForTheRequestCity(
                 new City(weatherRequest.getLatitude(), weatherRequest.getLongitude())
         );
@@ -163,6 +165,8 @@ public class WeatherServiceImpl implements WeatherService {
         weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weather).build());
 
         log.info("Message {} published", weather);
+
+        System.out.println("Message {} published" + weather.toString());
 
     }
 
