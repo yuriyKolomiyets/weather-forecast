@@ -4,6 +4,7 @@ import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.dto.WeatherJsonModel;
 import com.example.weatherforecast.dto.WeatherRequest;
+import com.example.weatherforecast.dto.WeatherResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
@@ -15,6 +16,6 @@ public interface WeatherService {
     List<Weather> getWeatherListFromDB(City city);
     List<Weather> getWeatherDataForTheRequestCity(City city) throws JsonProcessingException;
     void listenWeatherRequest(WeatherRequest weatherRequest) throws JsonProcessingException;
-    void sendWeatherResponse(List<Weather> weathers);
+    public void sendWeatherResponse(List<WeatherResponse> weatherResponses);
 }
 
