@@ -3,6 +3,7 @@ package com.example.weatherforecast.services;
 import com.example.weatherforecast.converters.WeatherToWeatherResponseConverter;
 import com.example.weatherforecast.dto.WeatherRequest;
 import com.example.weatherforecast.dto.WeatherResponse;
+import com.example.weatherforecast.dto.WeatherDto;
 import com.example.weatherforecast.integration.WeatherApiIntegration;
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
@@ -157,18 +158,18 @@ public class WeatherServiceImpl implements WeatherService {
                 new City(weatherRequest.getLatitude(), weatherRequest.getLongitude())
         );
 
-        List <WeatherResponse> responses = new ArrayList<>();
+        List <WeatherDto> weatherDtos = new ArrayList<>();
 
-        for (Weather weather : weathers) {
-            WeatherResponse response = weatherToWeatherResponseConverter.convert(weather, weatherRequest);
-            responses.add(response);
-        }
-        sendWeatherResponse(responses);
+        weathers.forEach(weather ->
+                weatherDtos.add(weatherToWeatherResponseConverter.convert(weather, weatherRequest)));
+
+        WeatherResponse response = new WeatherResponse(weatherDtos, weatherRequest.getTripId());
+        sendWeatherResponse(response);
 
     }
 
     @Override
-    public void sendWeatherResponse(List<WeatherResponse> weatherResponses) {
+    public void sendWeatherResponse(WeatherResponse weatherResponses) {
 
         weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weatherResponses).build());
 

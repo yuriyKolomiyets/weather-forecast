@@ -5,16 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class WeatherResponse {
+public class WeatherDto {
 
-    private List<WeatherDto> weatherDtoList;
-    private Long tripId;
-
-
+    private String date;
+    private String time;
+    private Double temperature;
+    private Double rainProbability;
 }
