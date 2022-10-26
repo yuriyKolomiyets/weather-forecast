@@ -1,6 +1,9 @@
 package com.example.weatherforecast.services;
 
+import com.example.weatherforecast.converters.WeatherToWeatherResponseConverter;
 import com.example.weatherforecast.dto.WeatherRequest;
+import com.example.weatherforecast.dto.WeatherResponse;
+import com.example.weatherforecast.dto.WeatherDto;
 import com.example.weatherforecast.integration.WeatherApiIntegration;
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
@@ -27,6 +30,7 @@ public class WeatherServiceImpl implements WeatherService {
     private final WeatherApiIntegration weatherApiIntegration;
     private final WeatherRepository weatherRepository;
     private final WeatherChannels weatherChannels;
+    private final WeatherToWeatherResponseConverter weatherToWeatherResponseConverter;
 
     private final int TIME_START_INDEX_IN_DATE_STRING = 11;
     private final int DATE_END_INDEX_IN_DATE_STRING = 10;
@@ -154,16 +158,22 @@ public class WeatherServiceImpl implements WeatherService {
                 new City(weatherRequest.getLatitude(), weatherRequest.getLongitude())
         );
 
-        sendWeatherResponse(weathers);
+        List <WeatherDto> weatherDtos = new ArrayList<>();
+
+        weathers.forEach(weather ->
+                weatherDtos.add(weatherToWeatherResponseConverter.convert(weather, weatherRequest)));
+
+        WeatherResponse response = new WeatherResponse(weatherDtos, weatherRequest.getTripId());
+        sendWeatherResponse(response);
 
     }
 
     @Override
-    public void sendWeatherResponse(List<Weather> weathers) {
+    public void sendWeatherResponse(WeatherResponse weatherResponses) {
 
-        weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weathers).build());
+        weatherChannels.weatherResponse().send(MessageBuilder.withPayload(weatherResponses).build());
 
-        log.info("Message {} published", weathers);
+        log.info("Message {} published", weatherResponses);
 
     }
 

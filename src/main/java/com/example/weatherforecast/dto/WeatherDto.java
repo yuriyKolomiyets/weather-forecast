@@ -9,8 +9,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class WeatherRequest {
-    private Double latitude;
-    private Double longitude;
-    private Long tripId;
+public class WeatherDto {
+
+    private String date;
+    private String time;
+    private Double temperature;
+    private Double rainProbability;
 }

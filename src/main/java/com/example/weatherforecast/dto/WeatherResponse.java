@@ -5,12 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class WeatherRequest {
-    private Double latitude;
-    private Double longitude;
+public class WeatherResponse {
+
+    private List<WeatherDto> weatherDtoList;
     private Long tripId;
+
+
 }

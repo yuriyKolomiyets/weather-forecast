@@ -1,5 +1,6 @@
 package com.example.weatherforecast.services;
 
+import com.example.weatherforecast.converters.WeatherToWeatherResponseConverter;
 import com.example.weatherforecast.dto.HourlyUnits;
 import com.example.weatherforecast.integration.WeatherApiIntegration;
 import com.example.weatherforecast.domain.Weather;
@@ -27,6 +28,9 @@ class WeatherServiceImplTest {
     private WeatherApiIntegration weatherApiIntegration;
     @Mock
     private WeatherChannels weatherChannels;
+
+    @Mock
+    private WeatherToWeatherResponseConverter weatherToWeatherResponseConverter;
 
     private WeatherJsonModel returnWeatherJsonModel;
 
@@ -62,7 +66,8 @@ class WeatherServiceImplTest {
 
     @Test
     void trimJSONto3ValuesDaily() {
-        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository, weatherChannels);
+        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository, weatherChannels,
+                weatherToWeatherResponseConverter);
         List<Weather> weatherList = weatherService.trimJSONto3ValuesDaily(returnWeatherJsonModel);
         assertNotNull(weatherList);
         assertEquals(3, weatherList.size());
@@ -72,7 +77,8 @@ class WeatherServiceImplTest {
 
     @Test
     void saveWeatherList(){
-        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository, weatherChannels);
+        WeatherService weatherService = new WeatherServiceImpl(weatherApiIntegration, weatherRepository,
+                weatherChannels, weatherToWeatherResponseConverter);
         List<Weather> weatherList = weatherService.trimJSONto3ValuesDaily(returnWeatherJsonModel);
         List<Weather> weatherList1 = weatherService.saveWeatherListToDB(weatherList);
         assertNotNull(weatherList1);
