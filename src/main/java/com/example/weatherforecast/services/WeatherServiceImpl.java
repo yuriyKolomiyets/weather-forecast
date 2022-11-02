@@ -1,5 +1,6 @@
 package com.example.weatherforecast.services;
 
+import com.example.weatherforecast.annotations.PrintResult;
 import com.example.weatherforecast.converters.WeatherToWeatherResponseConverter;
 import com.example.weatherforecast.dto.WeatherRequest;
 import com.example.weatherforecast.dto.WeatherResponse;

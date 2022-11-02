@@ -1,5 +1,6 @@
 package com.example.weatherforecast.controllers;
 
+import com.example.weatherforecast.annotations.PrintResult;
 import com.example.weatherforecast.domain.City;
 import com.example.weatherforecast.domain.Weather;
 import com.example.weatherforecast.services.WeatherService;
@@ -18,6 +19,7 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @RequestMapping(value = "/api/latitude/{latitude}/longitude/{longitude}", method = GET)
+    @PrintResult
     public List <Weather> getWeather(@PathVariable Double latitude, @PathVariable Double longitude )
             throws JsonProcessingException {
         return weatherService.getWeatherDataForTheRequestCity(new City(latitude,longitude));
